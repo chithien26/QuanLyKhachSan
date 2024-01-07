@@ -1,11 +1,12 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum, Boolean, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from app import db, app
 from flask_login import UserMixin
 import enum
 from datetime import datetime
 import hashlib
 import json
+
 
 
 class UserRoleEnum(enum.Enum):
@@ -15,7 +16,7 @@ class UserRoleEnum(enum.Enum):
 
 class ChucVu(db.Model):
     MaChucVu = Column(Integer, primary_key=True, autoincrement=True)
-    TenChucVu = Column(String(30), nullable=False)
+    TenChucVu = Column(String(30), nullable=False, unique=True)
     NhanVien = relationship('NhanVien', backref='chucVu', lazy=True)
 
     def __str__(self):
@@ -37,7 +38,7 @@ class TaiKhoanNhanVien(db.Model):
     TenTK = Column(String(20), nullable=False)
     Username = Column(String(20), unique=True, nullable=False)
     Password = Column(String(20), nullable=False)
-    Email = Column(String(20), unique=True, nullable=False)
+    Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
     MaNV = Column(Integer, ForeignKey(NhanVien.MaNV), nullable=False)
 
@@ -63,19 +64,19 @@ class TaiKhoanKhachHang(db.Model):
     TenTK = Column(String(20), nullable=False)
     Username = Column(String(20), unique=True, nullable=False)
     Password = Column(String(20), nullable=False)
-    Email = Column(String(20), unique=True, nullable=False)
+    Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
     MaKH = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
 
 class LoaiPhong(db.Model):
     MaLoaiPhong = Column(Integer, primary_key=True, autoincrement=True)
-    TenLoaiPhong = Column(String(20), nullable=False)
+    TenLoaiPhong = Column(String(20), nullable=False, unique=True)
     DonGia = Column(Float, nullable=False)
+    Image = Column(String(100), nullable=False)
     Phong = relationship('Phong', backref='loaiPhong', lazy=True)
-
 class Phong(db.Model):
     MaPhong = Column(Integer, primary_key=True, autoincrement=True)
-    TenPhong = Column(String(20), nullable=False)
+    TenPhong = Column(String(20), nullable=False, unique=True)
     SoKhachToiDa = Column(Integer, nullable=True, default=3)
     MoTa = Column(String(100), nullable=True, default='Phòng dành cho 3 khách')
     MaLoaiPhong = Column(Integer, ForeignKey(LoaiPhong.MaLoaiPhong), nullable=False)
@@ -102,24 +103,27 @@ class PhieuThuePhong(db.Model):
     KhachHang = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
     HoaDon = relationship('HoaDon', backref='phieuThuePhong', lazy=True)
 
+
+
+ChiTietPhuThu = db.Table('ChiTietPhuThu',
+                         Column('MaHoaDon', Integer, ForeignKey('hoaDon.MaHoaDon'), primary_key=True),
+                         Column('MaPhuThu', Integer, ForeignKey('phuThu.MaPhuThu'), primary_key=True))
+
 class HoaDon(db.Model):
+    __tablename__ = "hoaDon"
     MaHoaDon = Column(Integer, primary_key=True, autoincrement=True)
-    PhuThu = Column(Float, default=0)
     ThanhTien = Column(Float, nullable=False)
     NgayThanhToan = Column(DateTime, default=datetime.now())
     PhieuThuePhong = Column(Integer, ForeignKey(PhieuThuePhong.MaPhieuThuePhong), nullable=False)
-    ChiTietPhuThu = relationship('ChiTietPhuThu', backref='hoaDon', lazy=True)
     DaThanhToan = Column(Boolean, default=False)
+    CacPhuThu = relationship('PhuThu', secondary='ChiTietPhuThu', lazy='subquery', backref=backref('hoaDon',lazy=True))
+
 
 class PhuThu(db.Model):
+    __tablename__ = "phuThu"
     MaPhuThu = Column(Integer, primary_key=True, autoincrement=True)
-    TenLoaiPhuThu = Column(String(30), nullable=False)
+    TenLoaiPhuThu = Column(String(30), nullable=False, unique=True)
     HeSo = Column(Float, nullable=False)
-    ChiTietPhuThu = relationship('ChiTietPhuThu', backref='phuThu', lazy=True)
-
-class ChiTietPhuThu(db.Model):
-    HoaDon = Column(Integer, ForeignKey(HoaDon.MaHoaDon), primary_key=True)
-    PhuThu = Column(Integer, ForeignKey(PhuThu.MaPhuThu), primary_key=True)
 
 def read_json(path):
     with open(path,'r') as f:
@@ -144,7 +148,7 @@ if __name__ == '__main__':
 #
 #         loaiPhong = read_json('data/LoaiPhong.json')
 #         for i in loaiPhong:
-#             a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"])
+#             a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"],Image=i["Image"])
 #             db.session.add(a)
 #             db.session.commit()
 #
@@ -153,7 +157,7 @@ if __name__ == '__main__':
 #             a = PhuThu(TenLoaiPhuThu=i["TenLoaiPhuThu"], HeSo=i["HeSo"])
 #             db.session.add(a)
 #             db.session.commit()
-#2
+# 2
 
         # khachHang = read_json('data/KhachHang.json')
         # for i in khachHang:
@@ -162,6 +166,23 @@ if __name__ == '__main__':
         #                   QuocTich=i["QuocTich"],LoaiKH=i["LoaiKH"])
         #     db.session.add(a)
         #     db.session.commit()
+        #
+        # nhanVien = read_json('data/NhanVien.json')
+        # for i in nhanVien:
+        #     a = NhanVien(HoNV=i["HoNV"], TenNV=i["TenNV"], Phone=i["Phone"],
+        #                   NgaySinh=i['NgaySinh'], GioiTinh=i['GioiTinh'],
+        #                   NgayVaoLam=i["NgayVaoLam"], ChucVu=i["ChucVu"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        #
+        # phong = read_json('data/Phong.json')
+        # for i in phong:
+        #     a = Phong(TenPhong=i["TenPhong"], SoKhachToiDa=i["SoKhachToiDa"], MoTa=i["MoTa"],MaLoaiPhong=i['MaLoaiPhong'])
+        #     db.session.add(a)
+        #     db.session.commit()
+
+# 3
 
         # taiKhoanKhachHang = read_json('data/TaiKhoanKhachHang.json')
         # for i in taiKhoanKhachHang:
@@ -169,10 +190,10 @@ if __name__ == '__main__':
         #                           Email=i['Email'], Phone=i['Phone'],MaKH=i["MaKH"])
         #     db.session.add(a)
         #     db.session.commit()
-
+        #
         # taiKhoanNhanVien = read_json('data/TaiKhoanNhanVien.json')
         # for i in taiKhoanNhanVien:
-        #     a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
+        #     a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
         #                           Email=i['Email'], Phone=i['Phone'], MaNV=i["MaNV"])
         #     db.session.add(a)
         #     db.session.commit()

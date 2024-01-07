@@ -8,17 +8,19 @@
 </form>
 <section class="container">
     <div class="row">
+        {% for r in room_list %}
         <div class="col-xs-12 col-md-3" style="padding: 5px;">
             <div class="card">
-                <img class="card-img-top" src="/static/images/iphone.png" alt="Card image">
+                <img class="card-img-top" src="{{ r.image }}" alt="Card image">
                   <div class="card-body">
-                    <h4 class="card-title">VIP</h4>
-                    <p class="card-text">Some example text.</p>
+                    <h4 class="card-title">{{ r.TenPhong }}</h4>
+                    <p class="card-text">{{  }}</p>
                     <a href="#" class="btn btn-primary" style="width:55%">Xem chi tiết</a>
                     <a href="#" class="btn btn-danger"  onclick="">Đặt phòng</a>
                   </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </section>
 {% endblock %}

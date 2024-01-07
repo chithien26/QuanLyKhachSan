@@ -13,7 +13,7 @@
     "Password": "Abc123",
     "Email": "dinhchien05@gmail.com",
     "Phone": "096409816",
-    "MaNV": 1
+    "MaNV": 2
   },
   {
     "TenTK": "Huy Phú",
@@ -21,6 +21,6 @@
     "Password": "Abc123",
     "Email": "huyphu28@gmail.com",
     "Phone": "0337104967",
-    "MaNV": 1
+    "MaNV": 3
   }
 ]
