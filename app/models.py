@@ -54,6 +54,7 @@ class KhachHang(db.Model):
     QuocTich = Column(String(20), nullable=False)
     MaKH = Column(Integer, ForeignKey(LoaiKhachHang.MaLoaiKH), nullable=False)
     TaiKhoanKH = relationship('TaiKhoanKhachHang', backref='KhachHang', lazy=True)
+    PhieuThuePhong = relationship('PhieuThuePhong', backref='KhachHang', lazy=True)
 
 class TaiKhoanKhachHang(db.Model):
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
@@ -76,7 +77,43 @@ class Phong(db.Model):
     SoKhachToiDa = Column(Integer, nullable=True, default=3)
     MoTa = Column(String(100), nullable=True, default='Phòng dành cho 3 khách')
     MaLoaiPhong = Column(Integer, ForeignKey(LoaiPhong.MaLoaiPhong), nullable=False)
+    DonDatPhong = relationship('DonDatPhong', backref='Phong', lazy=True)
+    ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='Phong', lazy=True)
 
 class DonDatPhong(db.Model):
     MaDonDatPhong = Column(Integer, primary_key=True, autoincrement=True)
+    MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), nullable=False)
     NgayDatPhong = Column(DateTime, default=datetime.now())
+    DaThanhToan = Column(Boolean, default=False)
+    ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='DonDatPhong', lazy=True)
+
+class ChiTietDonDatPhong(db.Model):
+    MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), primary_key=True)
+    MaDonDatPhong = Column(Integer, ForeignKey(DonDatPhong.MaDonDatPhong), primary_key=True)
+    NgayNhanPhong = Column(DateTime, nullable=False)
+    NgayTraPhong = Column(DateTime, nullable=False)
+
+class PhieuThuePhong(db.Model):
+    MaPhieuThuePhong = Column(Integer, primary_key=True, autoincrement=True)
+    NgayNhanPhong = Column(DateTime, nullable=False)
+    NgayTraPhong = Column(DateTime, nullable=False)
+    SoLuongKhach = Column(Integer, nullable=False)
+    KhachHang = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
+    HoaDon = relationship('HoaDon', backref='PhieuThuePhong', lazy=True)
+
+class HoaDon(db.Model):
+    MaHoaDon = Column(Integer, primary_key=True, autoincrement=True)
+    PhuThu = Column(Float, default=0)
+    ThanhTien = Column(Float, nullable=False)
+    NgayThanhToan = Column(DateTime, default=datetime.now())
+    PhieuThuePhong = Column(Integer, ForeignKey(PhieuThuePhong.MaPhieuThuePhong), nullable=False)
+    ChiTietPhuThu = relationship('ChiTietPhuThu', backref='HoaDon', lazy=True)
+class PhuThu(db.Model):
+    MaPhuThu = Column(Integer, primary_key=True, autoincrement=True)
+    TenLoaiTaiPhuThu = Column(String(30), nullable=False)
+    HeSo = Column(Float, nullable=False)
+    ChiTietPhuThu = relationship('ChiTietPhuThu', backref='PhuThu', lazy=True)
+
+class ChiTietPhuThu(db.Model):
+    HoaDon = Column(Integer, ForeignKey(HoaDon.MaHoaDon), primary_key=True)
+    PhuThu = Column(Integer, ForeignKey(PhuThu.MaPhuThu), primary_key=True)
