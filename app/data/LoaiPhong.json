@@ -1,0 +1,18 @@
+[
+  {
+    "TenLoaiPhong": "Standard",
+    "DonGia": 150000
+  },
+  {
+    "TenLoaiPhong": "Deluxe",
+    "DonGia": 200000
+  },
+  {
+    "TenLoaiPhong": "Vip",
+    "DonGia": 300000
+  },
+  {
+    "TenLoaiPhong": "Super Vip",
+    "DonGia": 400000
+  }
+]

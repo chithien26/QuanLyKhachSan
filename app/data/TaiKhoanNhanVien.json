@@ -1,0 +1,26 @@
+[
+  {
+    "TenTK": "Chí Thiện",
+    "Username": "chithien26",
+    "Password": "Abc123",
+    "Email": "chithien26@gmail.com",
+    "Phone": "0942117827",
+    "MaNV": 1
+  },
+  {
+    "TenTK": "Đình Chiến",
+    "Username": "dinhchien05",
+    "Password": "Abc123",
+    "Email": "dinhchien05@gmail.com",
+    "Phone": "096409816",
+    "MaNV": 1
+  },
+  {
+    "TenTK": "Huy Phú",
+    "Username": "huyphu28",
+    "Password": "Abc123",
+    "Email": "huyphu28@gmail.com",
+    "Phone": "0337104967",
+    "MaNV": 1
+  }
+]
