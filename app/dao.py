@@ -34,6 +34,9 @@ def add_user(tenTK, username, password, email, phone):
     db.session.add(tk)
     db.session.commit()
 
-
+def get_taikhoan():
+    return TK.query.all()
 # def get_phong_by_id(id):
 #     return Phong.query.get(id)
+def get_loaiphong():
+    return LoaiPhong.query.all()
