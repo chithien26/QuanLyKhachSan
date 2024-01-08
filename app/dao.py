@@ -1,29 +1,39 @@
-from app.models import Phong, LoaiPhong
-from app import app, db
 import hashlib
 from flask_login import current_user
-from sqlalchemy import func
-import cloudinary.uploader
+from app import db
+from app.models import Phong, LoaiPhong, TaiKhoan as TK
 
-
-def load_room():
-    products = Phong.query
-
-    # if kw:
-    #     products = products.filter(Product.name.contains(kw))
-    #
-    # if cate_id:
-    #     products = products.filter(Product.category_id.__eq__(cate_id))
-    #
-    # if page:
-    #     page = int(page)
-    #     page_size = app.config['PAGE_SIZE']
-    #     start = (page - 1)*page_size
-    #
-    #     return products.slice(start, start + page_size)
-
-    return products.all()
 
 def get_phong():
-    return Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia, LoaiPhong.TenLoaiPhong, LoaiPhong.Image ).all()
+    return Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia,
+                                                                                               LoaiPhong.TenLoaiPhong,
+                                                                                               LoaiPhong.Image).all()
 
+
+def get_user_by_id(user_id):
+    return TK.query.get(user_id)
+
+
+def auth_user(username, password):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+
+    return TK.query.filter(TK.Username.__eq__(username.strip()),
+                             TK.Password.__eq__(password)).first()
+
+
+
+def add_user(tenTK, username, password, email, phone):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+    tk = TK(TenTK=tenTK, Username=username, Password=password, Email=email, Phone=phone)
+
+    # if avatar:
+    #     res = cloudinary.uploader.upload(avatar)
+    #     print(res)
+    #     u.avatar = res['secure_url']
+
+    db.session.add(tk)
+    db.session.commit()
+
+
+# def get_phong_by_id(id):
+#     return Phong.query.get(id)

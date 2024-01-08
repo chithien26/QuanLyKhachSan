@@ -2,19 +2,21 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship, backref
 from app import db, app
 from flask_login import UserMixin
-import enum
+from enum import Enum as UserEnum
 from datetime import datetime
 import hashlib
 import json
+from flask_login import UserMixin
 
 
 
-class UserRoleEnum(enum.Enum):
-    USER = 1
-    ADMIN = 2
+class UserRoleEnum(UserEnum):
+    KHACHHANG = 1
+    NHANVIEN = 2
 
 
 class ChucVu(db.Model):
+    __tablename__ = 'chucVu'
     MaChucVu = Column(Integer, primary_key=True, autoincrement=True)
     TenChucVu = Column(String(30), nullable=False, unique=True)
     NhanVien = relationship('NhanVien', backref='chucVu', lazy=True)
@@ -23,6 +25,7 @@ class ChucVu(db.Model):
         return self.TenChucVu
 
 class NhanVien(db.Model):
+    __tablename__ = "nhanVien"
     MaNV = Column(Integer, primary_key=True, autoincrement=True)
     HoNV = Column(String(10), nullable=False)
     TenNV = Column(String(30), nullable=False)
@@ -31,24 +34,13 @@ class NhanVien(db.Model):
     GioiTinh = Column(String(10), nullable=False)
     NgayVaoLam = Column(DateTime, default=datetime.now())
     ChucVu = Column(Integer, ForeignKey(ChucVu.MaChucVu), nullable=False)
-    TaiKhoanNV = relationship('TaiKhoanNhanVien', backref='nhanVien', lazy=True)
 
     def __str__(self):
         return self.TenNV
 
-class TaiKhoanNhanVien(db.Model):
-    MaTK = Column(Integer, primary_key=True, autoincrement=True)
-    TenTK = Column(String(20), nullable=False)
-    Username = Column(String(20), unique=True, nullable=False)
-    Password = Column(String(100), nullable=False)
-    Email = Column(String(50), unique=True, nullable=False)
-    Phone = Column(String(20), nullable=False)
-    MaNV = Column(Integer, ForeignKey(NhanVien.MaNV), nullable=False)
-
-    def __str__(self):
-        return self.TenTK
 
 class LoaiKhachHang(db.Model):
+    __tablename__ = "loaiKhachHang"
     MaLoaiKH = Column(Integer, primary_key=True, autoincrement=True)
     TenLoaiKH = Column(String(20), nullable=False)
     KhachHang = relationship('KhachHang',backref='loaiKhachHang', lazy=True)
@@ -57,6 +49,7 @@ class LoaiKhachHang(db.Model):
         return self.TenLoaiKH
 
 class KhachHang(db.Model):
+    __tablename__ = "khachHang"
     MaKH = Column(Integer, primary_key=True, autoincrement=True)
     HoKH = Column(String(10), nullable=False)
     TenKH = Column(String(30), nullable=False)
@@ -65,25 +58,29 @@ class KhachHang(db.Model):
     DiaChi = Column(String(50), nullable=True)
     QuocTich = Column(String(20), nullable=False)
     LoaiKH = Column(Integer, ForeignKey(LoaiKhachHang.MaLoaiKH), nullable=False)
-    TaiKhoanKH = relationship('TaiKhoanKhachHang', backref='khachHang', lazy=True)
     PhieuThuePhong = relationship('PhieuThuePhong', backref='khachHang', lazy=True)
 
     def __str__(self):
         return self.TenKH
 
-class TaiKhoanKhachHang(db.Model):
+class TaiKhoan(db.Model, UserMixin):
+    __tablename__ = "taiKhoan"
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
     TenTK = Column(String(20), nullable=False)
     Username = Column(String(20), unique=True, nullable=False)
     Password = Column(String(100), nullable=False)
     Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
-    MaKH = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
+    user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.KHACHHANG)
+
+    def get_id(self):
+        return str(self.MaTK)
 
     def __str__(self):
         return self.TenTK
 
 class LoaiPhong(db.Model):
+    __tablename__ = "loaiPhong"
     MaLoaiPhong = Column(Integer, primary_key=True, autoincrement=True)
     TenLoaiPhong = Column(String(20), nullable=False, unique=True)
     DonGia = Column(Float, nullable=False)
@@ -93,6 +90,7 @@ class LoaiPhong(db.Model):
     def __str__(self):
         return self.TenLoaiPhong
 class Phong(db.Model):
+    __tablename__ = "phong"
     MaPhong = Column(Integer, primary_key=True, autoincrement=True)
     TenPhong = Column(String(20), nullable=False, unique=True)
     SoKhachToiDa = Column(Integer, nullable=True, default=3)
@@ -105,6 +103,7 @@ class Phong(db.Model):
         return self.TenPhong
 
 class DonDatPhong(db.Model):
+    __tablename__ = "donDatPhong"
     MaDonDatPhong = Column(Integer, primary_key=True, autoincrement=True)
     MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), nullable=False)
     NgayDatPhong = Column(DateTime, default=datetime.now())
@@ -114,12 +113,14 @@ class DonDatPhong(db.Model):
         return self.MaDonDatPhong
 
 class ChiTietDonDatPhong(db.Model):
+    __tablename__ = "chiTietDonDatPhong"
     MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), primary_key=True)
     MaDonDatPhong = Column(Integer, ForeignKey(DonDatPhong.MaDonDatPhong), primary_key=True)
     NgayNhanPhong = Column(DateTime, nullable=False)
     NgayTraPhong = Column(DateTime, nullable=False)
 
 class PhieuThuePhong(db.Model):
+    __tablename__ = "phieuThuePhong"
     MaPhieuThuePhong = Column(Integer, primary_key=True, autoincrement=True)
     NgayNhanPhong = Column(DateTime, nullable=False)
     NgayTraPhong = Column(DateTime, nullable=False)
@@ -160,63 +161,55 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-        chucVu = read_json('data/ChucVu.json')
-        for i in chucVu:
-            a = ChucVu(TenChucVu=i["TenChucVu"])
-            db.session.add(a)
-            db.session.commit()
-
-        loaiKhachHang = read_json('data/LoaiKhachHang.json')
-        for i in loaiKhachHang:
-            a = LoaiKhachHang(TenLoaiKH=i["TenLoaiKH"])
-            db.session.add(a)
-            db.session.commit()
-
-        loaiPhong = read_json('data/LoaiPhong.json')
-        for i in loaiPhong:
-            a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"],Image=i["Image"])
-            db.session.add(a)
-            db.session.commit()
-
-        phuThu = read_json('data/PhuThu.json')
-        for i in phuThu:
-            a = PhuThu(TenLoaiPhuThu=i["TenLoaiPhuThu"], HeSo=i["HeSo"])
-            db.session.add(a)
-            db.session.commit()
-
-        khachHang = read_json('data/KhachHang.json')
-        for i in khachHang:
-            a = KhachHang(HoKH=i["HoKH"], TenKH=i["TenKH"], Phone=i["Phone"],
-                          CMND=i['CMND'], DiaChi=i['DiaChi'],
-                          QuocTich=i["QuocTich"],LoaiKH=i["LoaiKH"])
-            db.session.add(a)
-            db.session.commit()
-
-        nhanVien = read_json('data/NhanVien.json')
-        for i in nhanVien:
-            a = NhanVien(HoNV=i["HoNV"], TenNV=i["TenNV"], Phone=i["Phone"],
-                          NgaySinh=i['NgaySinh'], GioiTinh=i['GioiTinh'],
-                          NgayVaoLam=i["NgayVaoLam"], ChucVu=i["ChucVu"])
-            db.session.add(a)
-            db.session.commit()
-
-
-        phong = read_json('data/Phong.json')
-        for i in phong:
-            a = Phong(TenPhong=i["TenPhong"], SoKhachToiDa=i["SoKhachToiDa"], MoTa=i["MoTa"],MaLoaiPhong=i['MaLoaiPhong'])
-            db.session.add(a)
-            db.session.commit()
-
-        taiKhoanKhachHang = read_json('data/TaiKhoanKhachHang.json')
-        for i in taiKhoanKhachHang:
-            a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=str(hashlib.md5(i["Password"].encode('utf-8')).hexdigest()),
-                                  Email=i['Email'], Phone=i['Phone'],MaKH=i["MaKH"])
-            db.session.add(a)
-            db.session.commit()
-
-        taiKhoanNhanVien = read_json('data/TaiKhoanNhanVien.json')
-        for i in taiKhoanNhanVien:
-            a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=str(hashlib.md5(i["Password"].encode('utf-8')).hexdigest()),
-                                  Email=i['Email'], Phone=i['Phone'], MaNV=i["MaNV"])
-            db.session.add(a)
-            db.session.commit()
+        # chucVu = read_json('data/ChucVu.json')
+        # for i in chucVu:
+        #     a = ChucVu(TenChucVu=i["TenChucVu"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # loaiKhachHang = read_json('data/LoaiKhachHang.json')
+        # for i in loaiKhachHang:
+        #     a = LoaiKhachHang(TenLoaiKH=i["TenLoaiKH"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # loaiPhong = read_json('data/LoaiPhong.json')
+        # for i in loaiPhong:
+        #     a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"],Image=i["Image"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # phuThu = read_json('data/PhuThu.json')
+        # for i in phuThu:
+        #     a = PhuThu(TenLoaiPhuThu=i["TenLoaiPhuThu"], HeSo=i["HeSo"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # khachHang = read_json('data/KhachHang.json')
+        # for i in khachHang:
+        #     a = KhachHang(HoKH=i["HoKH"], TenKH=i["TenKH"], Phone=i["Phone"],
+        #                   CMND=i['CMND'], DiaChi=i['DiaChi'],
+        #                   QuocTich=i["QuocTich"],LoaiKH=i["LoaiKH"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # nhanVien = read_json('data/NhanVien.json')
+        # for i in nhanVien:
+        #     a = NhanVien(HoNV=i["HoNV"], TenNV=i["TenNV"], Phone=i["Phone"],
+        #                   NgaySinh=i['NgaySinh'], GioiTinh=i['GioiTinh'],
+        #                   NgayVaoLam=i["NgayVaoLam"], ChucVu=i["ChucVu"])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        #
+        # phong = read_json('data/Phong.json')
+        # for i in phong:
+        #     a = Phong(TenPhong=i["TenPhong"], SoKhachToiDa=i["SoKhachToiDa"], MoTa=i["MoTa"],MaLoaiPhong=i['MaLoaiPhong'])
+        #     db.session.add(a)
+        #     db.session.commit()
+        #
+        # tk = TaiKhoan(TenTK='Admin', Username='admin',
+        #               Password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #               Email='admin.@gmail.com', Phone='0987654321', user_role=UserRoleEnum.NHANVIEN)
+        # db.session.add(tk)
+        # db.session.commit()
