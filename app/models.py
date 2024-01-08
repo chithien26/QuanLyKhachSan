@@ -40,7 +40,7 @@ class TaiKhoanNhanVien(db.Model):
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
     TenTK = Column(String(20), nullable=False)
     Username = Column(String(20), unique=True, nullable=False)
-    Password = Column(String(20), nullable=False)
+    Password = Column(String(100), nullable=False)
     Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
     MaNV = Column(Integer, ForeignKey(NhanVien.MaNV), nullable=False)
@@ -75,7 +75,7 @@ class TaiKhoanKhachHang(db.Model):
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
     TenTK = Column(String(20), nullable=False)
     Username = Column(String(20), unique=True, nullable=False)
-    Password = Column(String(20), nullable=False)
+    Password = Column(String(100), nullable=False)
     Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
     MaKH = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
@@ -209,14 +209,14 @@ if __name__ == '__main__':
 
         taiKhoanKhachHang = read_json('data/TaiKhoanKhachHang.json')
         for i in taiKhoanKhachHang:
-            a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
+            a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=str(hashlib.md5(i["Password"].encode('utf-8')).hexdigest()),
                                   Email=i['Email'], Phone=i['Phone'],MaKH=i["MaKH"])
             db.session.add(a)
             db.session.commit()
 
         taiKhoanNhanVien = read_json('data/TaiKhoanNhanVien.json')
         for i in taiKhoanNhanVien:
-            a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
+            a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=str(hashlib.md5(i["Password"].encode('utf-8')).hexdigest()),
                                   Email=i['Email'], Phone=i['Phone'], MaNV=i["MaNV"])
             db.session.add(a)
             db.session.commit()
