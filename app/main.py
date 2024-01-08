@@ -1,6 +1,7 @@
 from flask import render_template, url_for
 from app import app, db
 import dao
+from app.admin import *
 
 @app.route('/')
 def index():

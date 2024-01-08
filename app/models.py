@@ -33,6 +33,9 @@ class NhanVien(db.Model):
     ChucVu = Column(Integer, ForeignKey(ChucVu.MaChucVu), nullable=False)
     TaiKhoanNV = relationship('TaiKhoanNhanVien', backref='nhanVien', lazy=True)
 
+    def __str__(self):
+        return self.TenNV
+
 class TaiKhoanNhanVien(db.Model):
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
     TenTK = Column(String(20), nullable=False)
@@ -42,10 +45,16 @@ class TaiKhoanNhanVien(db.Model):
     Phone = Column(String(20), nullable=False)
     MaNV = Column(Integer, ForeignKey(NhanVien.MaNV), nullable=False)
 
+    def __str__(self):
+        return self.TenTK
+
 class LoaiKhachHang(db.Model):
     MaLoaiKH = Column(Integer, primary_key=True, autoincrement=True)
     TenLoaiKH = Column(String(20), nullable=False)
     KhachHang = relationship('KhachHang',backref='loaiKhachHang', lazy=True)
+
+    def __str__(self):
+        return self.TenLoaiKH
 
 class KhachHang(db.Model):
     MaKH = Column(Integer, primary_key=True, autoincrement=True)
@@ -59,6 +68,9 @@ class KhachHang(db.Model):
     TaiKhoanKH = relationship('TaiKhoanKhachHang', backref='khachHang', lazy=True)
     PhieuThuePhong = relationship('PhieuThuePhong', backref='khachHang', lazy=True)
 
+    def __str__(self):
+        return self.TenKH
+
 class TaiKhoanKhachHang(db.Model):
     MaTK = Column(Integer, primary_key=True, autoincrement=True)
     TenTK = Column(String(20), nullable=False)
@@ -68,12 +80,18 @@ class TaiKhoanKhachHang(db.Model):
     Phone = Column(String(20), nullable=False)
     MaKH = Column(Integer, ForeignKey(KhachHang.MaKH), nullable=False)
 
+    def __str__(self):
+        return self.TenTK
+
 class LoaiPhong(db.Model):
     MaLoaiPhong = Column(Integer, primary_key=True, autoincrement=True)
     TenLoaiPhong = Column(String(20), nullable=False, unique=True)
     DonGia = Column(Float, nullable=False)
     Image = Column(String(100), nullable=False)
     Phong = relationship('Phong', backref='loaiPhong', lazy=True)
+
+    def __str__(self):
+        return self.TenLoaiPhong
 class Phong(db.Model):
     MaPhong = Column(Integer, primary_key=True, autoincrement=True)
     TenPhong = Column(String(20), nullable=False, unique=True)
@@ -83,11 +101,17 @@ class Phong(db.Model):
     DonDatPhong = relationship('DonDatPhong', backref='phong', lazy=True)
     ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='phong', lazy=True)
 
+    def __str__(self):
+        return self.TenPhong
+
 class DonDatPhong(db.Model):
     MaDonDatPhong = Column(Integer, primary_key=True, autoincrement=True)
     MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), nullable=False)
     NgayDatPhong = Column(DateTime, default=datetime.now())
     ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='donDatPhong', lazy=True)
+
+    def __str__(self):
+        return self.MaDonDatPhong
 
 class ChiTietDonDatPhong(db.Model):
     MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), primary_key=True)
@@ -125,6 +149,9 @@ class PhuThu(db.Model):
     TenLoaiPhuThu = Column(String(30), nullable=False, unique=True)
     HeSo = Column(Float, nullable=False)
 
+    def __str__(self):
+        return self.TenLoaiPhuThu
+
 def read_json(path):
     with open(path,'r') as f:
         return json.load(f)
@@ -133,67 +160,63 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-# 1
-#         chucVu = read_json('data/ChucVu.json')
-#         for i in chucVu:
-#             a = ChucVu(TenChucVu=i["TenChucVu"])
-#             db.session.add(a)
-#             db.session.commit()
-#
-#         loaiKhachHang = read_json('data/LoaiKhachHang.json')
-#         for i in loaiKhachHang:
-#             a = LoaiKhachHang(TenLoaiKH=i["TenLoaiKH"])
-#             db.session.add(a)
-#             db.session.commit()
-#
-#         loaiPhong = read_json('data/LoaiPhong.json')
-#         for i in loaiPhong:
-#             a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"],Image=i["Image"])
-#             db.session.add(a)
-#             db.session.commit()
-#
-#         phuThu = read_json('data/PhuThu.json')
-#         for i in phuThu:
-#             a = PhuThu(TenLoaiPhuThu=i["TenLoaiPhuThu"], HeSo=i["HeSo"])
-#             db.session.add(a)
-#             db.session.commit()
-# 2
+        chucVu = read_json('data/ChucVu.json')
+        for i in chucVu:
+            a = ChucVu(TenChucVu=i["TenChucVu"])
+            db.session.add(a)
+            db.session.commit()
 
-        # khachHang = read_json('data/KhachHang.json')
-        # for i in khachHang:
-        #     a = KhachHang(HoKH=i["HoKH"], TenKH=i["TenKH"], Phone=i["Phone"],
-        #                   CMND=i['CMND'], DiaChi=i['DiaChi'],
-        #                   QuocTich=i["QuocTich"],LoaiKH=i["LoaiKH"])
-        #     db.session.add(a)
-        #     db.session.commit()
-        #
-        # nhanVien = read_json('data/NhanVien.json')
-        # for i in nhanVien:
-        #     a = NhanVien(HoNV=i["HoNV"], TenNV=i["TenNV"], Phone=i["Phone"],
-        #                   NgaySinh=i['NgaySinh'], GioiTinh=i['GioiTinh'],
-        #                   NgayVaoLam=i["NgayVaoLam"], ChucVu=i["ChucVu"])
-        #     db.session.add(a)
-        #     db.session.commit()
-        #
-        #
-        # phong = read_json('data/Phong.json')
-        # for i in phong:
-        #     a = Phong(TenPhong=i["TenPhong"], SoKhachToiDa=i["SoKhachToiDa"], MoTa=i["MoTa"],MaLoaiPhong=i['MaLoaiPhong'])
-        #     db.session.add(a)
-        #     db.session.commit()
+        loaiKhachHang = read_json('data/LoaiKhachHang.json')
+        for i in loaiKhachHang:
+            a = LoaiKhachHang(TenLoaiKH=i["TenLoaiKH"])
+            db.session.add(a)
+            db.session.commit()
 
-# 3
+        loaiPhong = read_json('data/LoaiPhong.json')
+        for i in loaiPhong:
+            a = LoaiPhong(TenLoaiPhong=i["TenLoaiPhong"], DonGia=i["DonGia"],Image=i["Image"])
+            db.session.add(a)
+            db.session.commit()
 
-        # taiKhoanKhachHang = read_json('data/TaiKhoanKhachHang.json')
-        # for i in taiKhoanKhachHang:
-        #     a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
-        #                           Email=i['Email'], Phone=i['Phone'],MaKH=i["MaKH"])
-        #     db.session.add(a)
-        #     db.session.commit()
-        #
-        # taiKhoanNhanVien = read_json('data/TaiKhoanNhanVien.json')
-        # for i in taiKhoanNhanVien:
-        #     a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
-        #                           Email=i['Email'], Phone=i['Phone'], MaNV=i["MaNV"])
-        #     db.session.add(a)
-        #     db.session.commit()
+        phuThu = read_json('data/PhuThu.json')
+        for i in phuThu:
+            a = PhuThu(TenLoaiPhuThu=i["TenLoaiPhuThu"], HeSo=i["HeSo"])
+            db.session.add(a)
+            db.session.commit()
+
+        khachHang = read_json('data/KhachHang.json')
+        for i in khachHang:
+            a = KhachHang(HoKH=i["HoKH"], TenKH=i["TenKH"], Phone=i["Phone"],
+                          CMND=i['CMND'], DiaChi=i['DiaChi'],
+                          QuocTich=i["QuocTich"],LoaiKH=i["LoaiKH"])
+            db.session.add(a)
+            db.session.commit()
+
+        nhanVien = read_json('data/NhanVien.json')
+        for i in nhanVien:
+            a = NhanVien(HoNV=i["HoNV"], TenNV=i["TenNV"], Phone=i["Phone"],
+                          NgaySinh=i['NgaySinh'], GioiTinh=i['GioiTinh'],
+                          NgayVaoLam=i["NgayVaoLam"], ChucVu=i["ChucVu"])
+            db.session.add(a)
+            db.session.commit()
+
+
+        phong = read_json('data/Phong.json')
+        for i in phong:
+            a = Phong(TenPhong=i["TenPhong"], SoKhachToiDa=i["SoKhachToiDa"], MoTa=i["MoTa"],MaLoaiPhong=i['MaLoaiPhong'])
+            db.session.add(a)
+            db.session.commit()
+
+        taiKhoanKhachHang = read_json('data/TaiKhoanKhachHang.json')
+        for i in taiKhoanKhachHang:
+            a = TaiKhoanKhachHang(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
+                                  Email=i['Email'], Phone=i['Phone'],MaKH=i["MaKH"])
+            db.session.add(a)
+            db.session.commit()
+
+        taiKhoanNhanVien = read_json('data/TaiKhoanNhanVien.json')
+        for i in taiKhoanNhanVien:
+            a = TaiKhoanNhanVien(TenTK=i["TenTK"], Username=i["Username"], Password=i["Password"],
+                                  Email=i['Email'], Phone=i['Phone'], MaNV=i["MaNV"])
+            db.session.add(a)
+            db.session.commit()
