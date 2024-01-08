@@ -1,4 +1,4 @@
-from app.models import Phong
+from app.models import Phong, LoaiPhong
 from app import app, db
 import hashlib
 from flask_login import current_user
@@ -23,3 +23,7 @@ def load_room():
     #     return products.slice(start, start + page_size)
 
     return products.all()
+
+def get_phong():
+    return Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia, LoaiPhong.TenLoaiPhong, LoaiPhong.Image ).all()
+

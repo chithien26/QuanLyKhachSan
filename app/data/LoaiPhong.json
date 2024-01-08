@@ -2,21 +2,21 @@
   {
     "TenLoaiPhong": "Standard",
     "DonGia": 150000,
-    "Image": "images/Standard.jpg"
+    "Image": "static/images/Standard.jpg"
   },
   {
     "TenLoaiPhong": "Deluxe",
     "DonGia": 200000,
-    "Image": "images/Deluxe.jpg"
+    "Image": "static/images/Deluxe.jpg"
   },
   {
     "TenLoaiPhong": "Vip",
     "DonGia": 300000,
-    "Image": "images/Vip.jpg"
+    "Image": "static/images/Vip.jpg"
   },
   {
     "TenLoaiPhong": "Super Vip",
     "DonGia": 400000,
-    "Image": "images/SuperVip.jpg"
+    "Image": "static/images/SuperVip.jpg"
   }
 ]

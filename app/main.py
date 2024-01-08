@@ -1,5 +1,5 @@
 from flask import render_template, url_for
-from app import app
+from app import app, db
 import dao
 
 @app.route('/')
@@ -8,7 +8,8 @@ def index():
 
 @app.route('/room_list')
 def room_list():
-    return render_template('room_list.html', room_list=dao.load_room())
+    rooms = dao.get_phong()
+    return render_template('room_list.html', room_list=rooms)
 
 
 if __name__ == "__main__":
