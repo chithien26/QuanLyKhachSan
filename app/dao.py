@@ -4,14 +4,23 @@ from app import db
 from app.models import Phong, LoaiPhong, TaiKhoan as TK, DonDatPhong, ChiTietDonDatPhong
 
 
-def get_phong():
+def load_phong(kw=None,from_price=None, to_price=None):
 
     phong = Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia,
                                                                                                LoaiPhong.TenLoaiPhong,
                                                                                                LoaiPhong.Image).all()
-    for p in phong:
-        phong = [p for p in phong if p.TenPhong]
+    if kw:
+        phong = [p for p in phong if (p.TenLoaiPhong.lower().find(kw.lower()) >= 0) ]
+
+    if from_price:
+        phong = [p for p in phong if p.DonGia >= float(from_price)]
+
+    if to_price:
+        phong = [p for p in phong if p.DonGia <= float(to_price)]
+
     return phong
+
+
 
 def get_user_by_id(user_id):
     return TK.query.get(user_id)

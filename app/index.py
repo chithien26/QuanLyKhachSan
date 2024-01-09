@@ -15,7 +15,10 @@ def index():
 
 @app.route('/room_list')
 def room_list():
-    rooms = dao.get_phong()
+    kw = request.args.get('keyword')
+    from_price = request.args.get('from_price')
+    to_price = request.args.get('to_price')
+    rooms = dao.load_phong(kw=kw, from_price=from_price, to_price=to_price)
     return render_template('room_list.html', room_list=rooms)
 
 @app.route('/admin/login', methods=['post'])
