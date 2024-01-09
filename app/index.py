@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from flask import render_template, request, redirect, url_for, session, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
@@ -6,6 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 import dao
 from app import login
 from app.admin import *
+from app.models import LoaiKhachHang
 
 
 @app.route('/')
@@ -82,6 +83,41 @@ def register_user():
 @app.route('/danhSachPhongDat')
 def danhSachPhongDat():
     return render_template('danhSachPhongDat.html')
+
+@app.route('/dat-phong', methods=['GET', 'POST'])
+def booking():
+    if request.method == 'POST':
+        ma_phong = int(request.form['ma_phong'])
+        ho_kh = request.form['ho_kh']
+        ten_kh = request.form['ten_kh']
+        phone = request.form['phone']
+        cmnd = request.form['cmnd']
+        dia_chi = request.form['dia_chi']
+        quoc_tich = request.form['quoc_tich']
+        ma_loai_khach_hang = request.form['ma_loai_khach_hang']
+
+        ngay_dat_phong = datetime.now()
+
+        # Tạo đối tượng LoaiKhachHang nếu chưa tồn tại
+        loai_khach_hang = LoaiKhachHang.query.get(ma_loai_khach_hang)
+        if not loai_khach_hang:
+            loai_khach_hang = LoaiKhachHang.query.filter_by(TenLoaiKH='Khách vãng lai').first()
+
+        # Tạo đối tượng KhachHang và lưu vào cơ sở dữ liệu
+        khach_hang = KhachHang(HoKH=ho_kh, TenKH=ten_kh, Phone=phone, CMND=cmnd, DiaChi=dia_chi, QuocTich=quoc_tich, LoaiKH=loai_khach_hang.MaLoaiKH)
+        db.session.add(khach_hang)
+        db.session.commit()
+
+        # Tạo đối tượng DonDatPhong và lưu vào cơ sở dữ liệu
+        don_dat_phong = DonDatPhong(MaPhong=ma_phong, NgayDatPhong=ngay_dat_phong)
+        db.session.add(don_dat_phong)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    danh_sach_phong = Phong.query.all()
+    danh_sach_loai_khach_hang = LoaiKhachHang.query.all()
+    return render_template('booking.html', danh_sach_phong=danh_sach_phong, danh_sach_loai_khach_hang=danh_sach_loai_khach_hang)
 
 if __name__ == "__main__":
     app.run(debug=True)

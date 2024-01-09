@@ -95,8 +95,8 @@ class Phong(db.Model):
     SoKhachToiDa = Column(Integer, nullable=True, default=3)
     MoTa = Column(String(100), nullable=True, default='Phòng dành cho 3 khách')
     MaLoaiPhong = Column(Integer, ForeignKey(LoaiPhong.MaLoaiPhong), nullable=False)
-    DonDatPhong = relationship('DonDatPhong', backref='phong', lazy=True)
     ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='phong', lazy=True)
+    DonDatPhong = relationship('DonDatPhong', backref='phong', lazy=True)
 
     def __str__(self):
         return self.TenPhong
@@ -108,10 +108,10 @@ class Phong(db.Model):
 class DonDatPhong(db.Model):
     __tablename__ = "donDatPhong"
     MaDonDatPhong = Column(Integer, primary_key=True, autoincrement=True)
-    MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), nullable=False)
+    MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), primary_key=True)
     NgayDatPhong = Column(DateTime, default=datetime.now())
     ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='donDatPhong', lazy=True)
-    taikhoan = Column(Integer, ForeignKey(TaiKhoan.MaTK), nullable=False)
+    taikhoan = Column(Integer, ForeignKey(TaiKhoan.MaTK), nullable=True)
     def __str__(self):
         return self.MaDonDatPhong
 

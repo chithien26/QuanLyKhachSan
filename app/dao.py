@@ -1,6 +1,6 @@
 import hashlib
 from flask_login import current_user
-from app import db
+from app import db, app
 from app.models import Phong, LoaiPhong, TaiKhoan as TK, DonDatPhong, ChiTietDonDatPhong
 
 
@@ -53,5 +53,15 @@ def get_taikhoan():
 def get_loaiphong():
     return LoaiPhong.query.all()
 
+def add_dondatphong(danhSachPhongDat, ngayNhanPhong,ngayTraPhong):
+    if danhSachPhongDat:
+        donDatPhong = DonDatPhong(taiKhoan=current_user)
+        db.session.add(donDatPhong)
+        for c in danhSachPhongDat.values():
+            d = ChiTietDonDatPhong(MaPhong=c['MaPhong'],MaDonDatPhong=donDatPhong,NgayNhanPhong=ngayNhanPhong, NgayTraPhong=ngayTraPhong)
+
+            db.session.add(d)
+
+        db.session.commit()
 
 
