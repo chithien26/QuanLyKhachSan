@@ -1,12 +1,11 @@
 import datetime
 
-from flask import render_template, request, redirect, url_for, session
-from flask_login import login_user, logout_user
+from flask import render_template, request, redirect, url_for, session, jsonify
+from flask_login import login_user, logout_user, login_required, current_user
 
 import dao
 from app import login
 from app.admin import *
-from app.models import LoaiPhong
 
 
 @app.route('/')
@@ -73,10 +72,13 @@ def register_user():
             else:
                 return redirect('/login')
         else:
-            err_msg = 'Mật khẩu KHÔNG khớp!'
+            err_msg = 'Mật khẩu không khớp!'
 
     return render_template('/register.html', err_msg=err_msg)
 
+@app.route('/danhSachPhongDat')
+def danhSachPhongDat():
+    return render_template('danhSachPhongDat.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

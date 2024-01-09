@@ -7,13 +7,12 @@ from datetime import datetime
 import hashlib
 import json
 from flask_login import UserMixin
-
+from sqlalchemy import MetaData
 
 
 class UserRoleEnum(UserEnum):
     KHACHHANG = 1
     NHANVIEN = 2
-
 
 class ChucVu(db.Model):
     __tablename__ = 'chucVu'
@@ -72,7 +71,7 @@ class TaiKhoan(db.Model, UserMixin):
     Email = Column(String(50), unique=True, nullable=False)
     Phone = Column(String(20), nullable=False)
     user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.KHACHHANG)
-
+    DonDatPhong = relationship("DonDatPhong", backref='taiKhoan', lazy=True)
     def get_id(self):
         return str(self.MaTK)
 
@@ -102,13 +101,17 @@ class Phong(db.Model):
     def __str__(self):
         return self.TenPhong
 
+    def get_phong_by_id(self, ma_phong):
+        phong = Phong.query.filter_by(MaPhong=ma_phong).first()
+        return phong
+
 class DonDatPhong(db.Model):
     __tablename__ = "donDatPhong"
     MaDonDatPhong = Column(Integer, primary_key=True, autoincrement=True)
     MaPhong = Column(Integer, ForeignKey(Phong.MaPhong), nullable=False)
     NgayDatPhong = Column(DateTime, default=datetime.now())
     ChiTietDonDatPhong = relationship('ChiTietDonDatPhong', backref='donDatPhong', lazy=True)
-
+    taikhoan = Column(Integer, ForeignKey(TaiKhoan.MaTK), nullable=False)
     def __str__(self):
         return self.MaDonDatPhong
 
@@ -154,8 +157,9 @@ class PhuThu(db.Model):
         return self.TenLoaiPhuThu
 
 def read_json(path):
-    with open(path,'r') as f:
+    with open(path,'r', encoding='utf-8') as f:
         return json.load(f)
+
 
 if __name__ == '__main__':
     with app.app_context():

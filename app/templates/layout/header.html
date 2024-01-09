@@ -12,6 +12,12 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="/room_list">Đặt Phòng</a>
                 </li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link active" href="/danhSachPhongDat">Danh sách phòng đặt</a>
+                </li>
+                {% endif %}
+
 
             </ul>
             <ul class="navbar-nav ms-auto me-0">

@@ -1,14 +1,17 @@
 import hashlib
 from flask_login import current_user
 from app import db
-from app.models import Phong, LoaiPhong, TaiKhoan as TK
+from app.models import Phong, LoaiPhong, TaiKhoan as TK, DonDatPhong, ChiTietDonDatPhong
 
 
 def get_phong():
-    return Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia,
+
+    phong = Phong.query.join(LoaiPhong, Phong.MaLoaiPhong == LoaiPhong.MaLoaiPhong).add_columns(LoaiPhong.DonGia,
                                                                                                LoaiPhong.TenLoaiPhong,
                                                                                                LoaiPhong.Image).all()
-
+    for p in phong:
+        phong = [p for p in phong if p.TenPhong]
+    return phong
 
 def get_user_by_id(user_id):
     return TK.query.get(user_id)
@@ -40,3 +43,6 @@ def get_taikhoan():
 #     return Phong.query.get(id)
 def get_loaiphong():
     return LoaiPhong.query.all()
+
+
+
