@@ -32,7 +32,7 @@
                     <h4 class="card-title">{{ room.TenLoaiPhong }}</h4>
                     <p class="card-text">{{ '{:,.0f} VNĐ/Đêm'.format(room.DonGia) }}</p>
                     <a href="#" class="btn btn-primary" style="width:55%">Xem chi tiết</a>
-                    <a href="{{ url_for('booking') }}" class="btn btn-danger" >Đặt phòng</a>
+                    <a href="{{ url_for('booking') }}" class="btn btn-danger" onclick="addToCart({{room.MaPhong}}, {{room.TenPhong}}, {{room.DonGia}} )">Đặt phòng</a>
                   </div>
             </div>
         </div>
