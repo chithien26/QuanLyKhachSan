@@ -8,8 +8,8 @@ class BaseView(ModelView):
     can_view_details = True
     edit_modal = True
     details_modal = True
-    # can_export = True
-    # column_searchable_list = ['name', 'mota']
+    column_searchable_list = ['name']
+
 
 
 admin = Admin(app=app, name='QUẢN LÝ KHÁCH SẠN', template_mode='bootstrap4')

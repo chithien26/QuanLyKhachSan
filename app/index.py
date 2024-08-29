@@ -121,3 +121,16 @@ def booking():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+logging.basicConfig(level=logging.INFO)
+
+@app.route('/admin/login', methods=['post'])
+def admin_login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user = dao.auth_user(username=username, password=password)
+    if user:
+        login_user(user=user)
+        logging.info(f'User {username} has logged in.')  # Ghi lại vào log
+
+    return redirect('/admin')

@@ -164,6 +164,22 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
+
+        class KhachHang(db.Model):
+            __tablename__ = "khachHang"
+            id = Column(Integer, primary_key=True, autoincrement=True)
+            hoTen = Column(String(10), nullable=False)
+            phone = Column(String(20), nullable=True)
+            CMND = Column(String(20), nullable=True)
+            diaChi = Column(String(50), nullable=True)
+            quocTich = Column(String(20), nullable=False)
+            loaiKH = Column(Enum(LoaiKhachHang), default=LoaiKhachHang.TRONGNUOC)
+
+            def __str__(self):
+                return self.hoTen
+
+            def get_full_info(self):  # Thêm phương thức này để hiển thị đầy đủ thông tin khách hàng
+                return f"{self.hoTen}, Phone: {self.phone}, CMND: {self.CMND}, Address: {self.diaChi}, Nationality: {self.quocTich}"
         # chucVu = read_json('data/ChucVu.json')
         # for i in chucVu:
         #     a = ChucVu(TenChucVu=i["TenChucVu"])
