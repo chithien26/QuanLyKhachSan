@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán</title>
+    <!-- Liên kết đến tệp CSS riêng cho trang thanh toán -->
+    <link rel="stylesheet" href="/static/css/payment.css">
+</head>
+<body>
+    <h1>Thanh toán đơn đặt phòng</h1>
+    <div class="booking-info">
+        <p>Loại phòng: {{ order.TenLoaiPhong }}</p>
+        <p>Ngày nhận phòng: {{ order.NgayNhanPhong.strftime('%d/%m/%Y') }}</p>
+        <p>Ngày trả phòng: {{ order.NgayTraPhong.strftime('%d/%m/%Y') }}</p>
+        <p>Tổng tiền: {{ '{:,.0f} VNĐ'.format((order.NgayTraPhong -  order.NgayNhanPhong).days * order.DonGia) }}</p>
+    </div>
+    <form class="payment-form" action="/process_payment/{{ order.MaDonDatPhong }}" method="POST">
+        <input type="hidden" name="thanh_tien" value="{{ (order.NgayTraPhong - order.NgayNhanPhong).days * order.DonGia }}">
+        <button type="submit">Thanh toán</button>
+    </form>
+</body>
+</html>

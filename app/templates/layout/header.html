@@ -1,44 +1,78 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">TCP.com</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <!-- Logo thương hiệu -->
+        <a class="navbar-brand fw-bold" href="/">Hotel<span class="text-primary">.com</span></a>
+
+        <!-- Nút toggle cho màn hình nhỏ -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav me-auto">
+
+        <!-- Nội dung của navbar -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Menu trái -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/">Trang chủ</a>
+                    <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="/">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/room_list">Đặt Phòng</a>
+                    <a class="nav-link" href="/room_list">Đặt Phòng</a>
                 </li>
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link active" href="/danhSachPhongDat">Danh sách phòng đặt</a>
+                    <a class="nav-link {{ 'active' if request.endpoint == 'danh_sach_phong_dat' }}" href="/danh-sach-phong-dat">Danh sách phòng đặt</a>
                 </li>
                 {% endif %}
-
-
+                {% if current_user.is_authenticated and current_user.user_role.name == 'ADMIN' %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'register' }}" href="/register">Tạo tài khoản người dùng</a>
+                </li>
+                {% endif %}
             </ul>
-            <ul class="navbar-nav ms-auto me-0">
+
+            <!-- Menu phải -->
+            <ul class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-info" href="">Chào {{ current_user.TenTK }}!</a>
+                    <a class="nav-link text-info" href="#">Chào, <strong>{{ current_user.TenTK }}</strong>!</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-info" href="/logout">Đăng xuất</a>
+                    <a class="btn btn-outline-danger btn-sm ms-2" href="/logout">Đăng xuất</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link text-info" href="/login">Đăng nhập</a>
+                    <a class="btn btn-outline-primary btn-sm me-2" href="/login">Đăng nhập</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-info" href="/register">Đăng ký</a>
+                    <a class="btn btn-primary btn-sm" href="/register">Đăng ký</a>
                 </li>
                 {% endif %}
-
             </ul>
-
         </div>
     </div>
 </nav>
+
+<style>
+    /* Tăng cường giao diện */
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        font-size: 1rem;
+    }
+
+    .nav-link.active {
+        font-weight: bold;
+        color: #00aaff !important; /* Màu nổi bật cho mục đang chọn */
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .navbar {
+        padding: 0.8rem 1rem;
+    }
+</style>

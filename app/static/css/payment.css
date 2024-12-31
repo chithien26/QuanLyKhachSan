@@ -1,0 +1,144 @@
+/* payment.css */
+
+/* Đặt phông chữ và nền trang */
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #FAEBD7; /* Nền sáng cho toàn bộ trang */
+    color: #333;  /* Màu chữ tối để dễ đọc */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tiêu đề trang */
+h1 {
+    text-align: center;
+    font-size: 2.8em;
+    color: #4CAF50; /* Màu xanh lá sáng cho tiêu đề */
+    margin-top: 40px;
+    font-weight: bold;
+}
+
+/* Thông tin đặt phòng */
+div.booking-info {
+    background-color: #ffffff;  /* Nền trắng cho thông tin đặt phòng */
+    color: #333;  /* Chữ màu tối cho dễ đọc */
+    padding: 30px;
+    margin: 30px auto;
+    width: 80%;
+    max-width: 650px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+}
+
+/* Định dạng cho từng đoạn thông tin */
+div.booking-info p {
+    font-size: 1.2em;
+    line-height: 1.8;
+    margin: 15px 0;
+    color: #555;  /* Màu chữ sáng để dễ đọc */
+}
+
+/* Form thanh toán */
+form.payment-form {
+    background-color: #ffffff;  /* Nền trắng cho form */
+    color: #333;
+    padding: 30px;
+    margin: 0 auto 40px;
+    width: 80%;
+    max-width: 650px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+}
+
+/* Label và Input trong form */
+form.payment-form label {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    display: block;
+    color: #333;
+}
+
+/* Các ô nhập liệu (input) */
+form.payment-form input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    margin: 10px 0 20px 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+/* Khi người dùng focus vào input */
+form.payment-form input:focus {
+    border-color: #4CAF50;
+    background-color: #fff;
+    outline: none;
+}
+
+/* Nút thanh toán */
+form.payment-form button {
+    background-color: #4CAF50;  /* Xanh lá cho nút */
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+/* Hiệu ứng hover cho nút */
+form.payment-form button:hover {
+    background-color: #45a049;
+}
+
+/* Thêm kiểu dáng cho thông báo thành công với nền tối */
+.success-message {
+    text-align: center;
+    background-color: #ffffff; /* Nền sáng cho thông báo thành công */
+    color: #333;  /* Màu chữ tối */
+    padding: 40px;
+    border-radius: 12px;
+    margin: 100px auto;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.success-message h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #4CAF50; /* Màu xanh lá cho tiêu đề thành công */
+}
+
+.success-message p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+.success-message a {
+    color: #fff;  /* Màu chữ của liên kết */
+    font-size: 1.2em;
+    text-decoration: none;
+    background-color: #444;  /* Màu nền của nút liên kết */
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.success-message a:hover {
+    background-color: #555; /* Thay đổi màu khi hover */
+}
+
+/* Thiết kế responsive cho các thiết bị di động */
+@media (max-width: 768px) {
+    div.booking-info, form.payment-form {
+        width: 90%;
+    }
+}

@@ -1,0 +1,83 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Chi tiết phòng{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="text-center text-danger mb-4">CHI TIẾT PHÒNG</h1>
+
+  <div class="row g-4">
+    <!-- Cột bên trái: Chi tiết phòng -->
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <img
+          src="/{{ room.Image }}"
+          alt="Ảnh phòng"
+          class="card-img-top img-fluid rounded"
+          style="object-fit: cover; max-height: 400px;"
+        >
+        <div class="card-body">
+          <h3 class="card-title text-primary">{{ room.TenLoaiPhong }}</h3>
+          <p class="card-text fs-5 text-success fw-bold">
+            {{ '{:,.0f} VNĐ/Đêm'.format(room.DonGia) }}
+          </p>
+          <a
+            href="{{ url_for('booking', ma_loai_phong=room.MaLoaiPhong) }}"
+            class="btn btn-danger btn-lg w-100"
+          >
+            Đặt phòng ngay
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột bên phải: Ghi chú -->
+    <div class="col-md-4">
+      <div class="card shadow-sm bg-light p-4">
+        <h5 class="text-primary mb-3">Thông tin cần biết</h5>
+        <ul class="list-unstyled">
+          <li><strong>Thời gian nhận phòng:</strong> 14:00</li>
+          <li><strong>Thời gian trả phòng:</strong> 12:00</li>
+          <li><strong>Hủy phòng miễn phí:</strong> Trước 24 giờ.</li>
+          <li><strong>Ưu đãi đặc biệt:</strong> Bữa sáng miễn phí cho mỗi phòng đặt trước 2 đêm.</li>
+        </ul>
+        <h6 class="text-primary mt-4">Tiện nghi đi kèm:</h6>
+        <ul class="list-unstyled">
+          <li><i class="bi bi-wifi text-success"></i> Wifi tốc độ cao miễn phí</li>
+          <li><i class="bi bi-tv text-success"></i> Truyền hình cáp</li>
+          <li><i class="bi bi-snow text-success"></i> Điều hòa không khí</li>
+          <li><i class="bi bi-broom text-success"></i> Dịch vụ dọn phòng hằng ngày</li>
+          <li><i class="bi bi-water text-success"></i> Hồ bơi ngoài trời</li>
+          <li><i class="bi bi-car-front text-success"></i> Bãi đỗ xe miễn phí</li>
+        </ul>
+        <hr>
+        <p class="text-secondary">
+          <em>
+            Hãy tận hưởng kỳ nghỉ của bạn tại T&Q Hotel với dịch vụ đẳng cấp. Chúng tôi cam kết mang lại trải nghiệm tốt nhất!
+          </em>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    border-radius: 12px;
+  }
+
+  .card img {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  ul li {
+    margin-bottom: 10px;
+  }
+
+  ul li i {
+    margin-right: 8px;
+  }
+</style>
+
+{% endblock %}

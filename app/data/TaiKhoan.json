@@ -1,0 +1,26 @@
+[
+  {
+    "TenTK": "Admin",
+    "Username": "admin",
+    "Password": "admin",
+    "Email": "admin@gmail.com",
+    "Phone": "0987654321",
+    "UserRole": "ADMIN"
+  },
+  {
+    "TenTK": "Nhân viên",
+    "Username": "nhanvien",
+    "Password": "nhanvien",
+    "Email": "nhanvien@gmail.com",
+    "Phone": "0987654321",
+    "UserRole": "NHANVIEN"
+  },
+  {
+    "TenTK": "Khách hàng",
+    "Username": "khachhang",
+    "Password": "khachhang",
+    "Email": "khachhang@gmail.com",
+    "Phone": "0987654321",
+    "UserRole": "KHACHHANG"
+  }
+]

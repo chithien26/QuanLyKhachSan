@@ -1,14 +1,59 @@
 {% extends 'layout/base.html' %}
-{% block title %} Trang chủ {% endblock %}
-<link rel="stylesheet" href="style.css">
+
+{% block title %}Trang Chủ{% endblock %}
 
 {% block content %}
-<section class="container">
-<div class="text-center" ><h1>Chào mừng bạn đến với khách sạn TCP</h1></div>
+<div class="container mt-5">
+    <!-- Banner -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-primary font-weight-bold">Chào mừng đến với Khách sạn chúng tôi!</h1>
+        <p class="lead text-secondary">Trải nghiệm kỳ nghỉ tuyệt vời với dịch vụ đẳng cấp tại khách sạn của chúng tôi.</p>
+        <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="Banner Trang Chủ" class="img-fluid rounded shadow-lg" style="max-width: 100%; height: auto; margin: 20px 0;">
+    </div>
 
-<div><img src="https://media-cdn.tripadvisor.com/media/photo-s/1c/b3/9f/cd/lobby.jpg" width="100%"></img></div>
+    <!-- Danh sách phòng -->
 
-</section>
+</div>
 
+<!-- Style -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container{
+        max-width: 100%;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .btn-outline-primary {
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 10px;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .lead {
+        font-size: 1.25rem;
+        font-weight: 400;
+    }
+</style>
 {% endblock %}

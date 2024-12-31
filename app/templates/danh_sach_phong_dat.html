@@ -1,0 +1,87 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Danh sách phòng đặt{% endblock %}
+
+{% block content %}
+<div class="container my-5 px-0">
+    <h1 class="text-center mb-4">Danh sách phòng đặt</h1>
+
+    <!-- Bộ lọc -->
+    {% if current_user.is_authenticated and current_user.user_role.name != 'KHACHHANG' %}
+    <section class="filter-section p-4 bg-white rounded shadow">
+        <h4 class="mb-3">Tìm kiếm</h4>
+        <form class="row g-3">
+            <div class="col-md-6">
+                <label for="ten" class="form-label">Tên</label>
+                <input type="text" class="form-control" id="ten" name="ten" placeholder="Nhập tên người đặt">
+            </div>
+            <div class="col-md-6">
+                <label for="sdt" class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" id="sdt" name="sdt" placeholder="Nhập số điện thoại">
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary px-5">Tìm</button>
+            </div>
+        </form>
+    </section>
+    {% endif %}
+
+    <!-- Danh sách phòng -->
+    {% if danh_sach_phong_dat %}
+    <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>Tên loại phòng</th>
+                    <th>Ngày nhận phòng</th>
+                    <th>Ngày trả phòng</th>
+                    <th>Ngày đặt phòng</th>
+                    {% if current_user.is_authenticated and current_user.user_role.name != 'KHACHHANG' %}
+                    <th>Tên khách hàng</th>
+                    <th>Số điện thoại</th>
+                    {% endif %}
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    {% if current_user.is_authenticated and current_user.user_role.name != 'KHACHHANG' %}
+                    <th></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in danh_sach_phong_dat %}
+                <tr id="{{ d.MaLoaiPhong }}">
+                    <td>{{ d.TenLoaiPhong }}</td>
+                    <td>{{ d.NgayNhanPhong.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ d.NgayTraPhong.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ d.NgayDatPhong.strftime('%d/%m/%Y') }}</td>
+                    {% if current_user.is_authenticated and current_user.user_role.name != 'KHACHHANG' %}
+                    <td>{{ d.HoTenNguoiDat }}</td>
+                    <td>{{ d.Phone }}</td>
+                    {% endif %}
+                    <td>{{ '{:,.0f} VNĐ'.format((d.NgayTraPhong - d.NgayNhanPhong).days * d.DonGia) }}</td>
+                    <td>
+                        {% if d.trang_thai.name == 'CHUA_THANH_TOAN' %}
+                        <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                        {% elif d.trang_thai.name == 'DA_THANH_TOAN' %}
+                        <span class="badge bg-success">Đã thanh toán</span>
+                        {% endif %}
+                    </td>
+                    {% if current_user.is_authenticated and current_user.user_role.name != 'KHACHHANG' and d.trang_thai.name == 'CHUA_THANH_TOAN' %}
+                    <td class="text-center">
+                        <a href="{{ url_for('payment', ma_don_dat_phong=d.MaDonDatPhong) }}" class="btn btn-primary btn-sm">
+                            Thanh toán
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center mt-4">
+        <i class="fas fa-exclamation-circle"></i> Bạn chưa đặt phòng nào!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

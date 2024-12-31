@@ -1,65 +1,117 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
+<h1 class="text-center text-info">THỐNG KÊ LƯỢT SỬ DỤNG PHÒNG THEO THÁNG</h1>
 
-
-{% if current_user.is_authenticated %}
-<h1 class="text-center text-info">CHÀO MỪNG ĐẾN TRANG QUẢN TRỊ!</h1>
-<h2 class="text-info">Chào {{ current_user.TenTK }}!</h2>
-
+<!-- Form chọn tháng -->
 <div class="row">
-  <div class="col-md-5"></div>
-  <div class="col-md-7">
-    <canvas id="myChart"></canvas>
-  </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="thang">Chọn tháng:</label>
+            <select id="thang" class="form-control">
+                {% for month in range(1, 13) %}
+                <option value="{{ month }}" {% if month == current_month %}selected{% endif %}>Tháng {{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Bảng thống kê -->
+<div class="row">
+    <div class="col-md-5 col-xs-12">
+        <table class="table">
+            <tr>
+                <th>Tên phòng</th>
+                <th>Lượt sử dụng</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7 col-xs-12">
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  let data=[];
-  let labels=[];
+    // Khởi tạo dữ liệu mặc định
+    let data = [];
+    let labels = [];
 
-  {% for s in stats %}
-  data.push({{s[2]}})
-  labels.push('{{s[1]}}')
-  {% endfor %}
+    {% for s in stats %}
+    data.push({{ s[1] }});
+    labels.push('{{ s[0] }}');
+    {% endfor %}
 
-  window.onload = function() {
-    const ctx = document.getElementById('myChart');
+    // Vẽ biểu đồ
+    function renderChart() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Lượt sử dụng phòng',
+                    data: data,
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    hoverBackgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    hoverBorderColor: 'rgba(54, 162, 235, 1)'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
 
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: '# Số lượng',
-          data: data,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
+    // Xử lý sự kiện thay đổi tháng
+    document.getElementById('thang').addEventListener('change', function() {
+        const month = this.value;
+
+        // Gửi yêu cầu AJAX để lấy dữ liệu thống kê theo tháng
+        fetch(`/admin/thong_ke?thang=${month}`)
+            .then(response => response.json())
+            .then(data => {
+                // Cập nhật dữ liệu bảng và biểu đồ
+                updateStats(data.stats);
+            });
     });
-  }
 
+    // Cập nhật bảng và biểu đồ sau khi nhận được dữ liệu mới từ backend
+    function updateStats(stats) {
+        // Cập nhật lại bảng
+        const tableBody = document.querySelector('table tbody');
+        tableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
+        stats.forEach(stat => {
+            const row = tableBody.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            cell1.textContent = stat[0];  // Tên phòng
+            cell2.textContent = stat[1];  // Lượt sử dụng
+        });
+
+        // Cập nhật lại dữ liệu cho biểu đồ
+        data = stats.map(stat => stat[1]);
+        labels = stats.map(stat => stat[0]);
+
+        // Render lại biểu đồ
+        renderChart();
+    }
+
+    // Vẽ biểu đồ mặc định khi trang tải lần đầu
+    window.onload = renderChart;
 </script>
-{% else %}
-<h1 class="text-center text-success">ĐĂNG NHẬP QUẢN TRỊ</h1>
-<form method="post" action="/admin/login">
-  <div class="mb-3 mt-3">
-    <label for="username" class="form-label">Tên đăng nhập:</label>
-    <input type="text" class="form-control" id="username" name="username" placeholder="Tên đăng nhập">
-  </div>
-  <div class="mb-3">
-    <label for="pwd" class="form-label">Mật khẩu:</label>
-    <input type="password" class="form-control" id="pwd" name="password" placeholder="Mật khẩu">
-  </div>
-  <button type="submit" class="btn btn-primary">Đăng nhập</button>
-</form>
-{% endif %}
+
 {% endblock %}

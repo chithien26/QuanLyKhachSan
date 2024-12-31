@@ -1,21 +1,19 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<h1 class="text-center text-info">THỐNG KÊ BÁO CÁO</h1>
+<h1 class="text-center text-info">THỐNG KÊ LƯỢT SỬ DỤNG PHÒNG THEO THÁNG</h1>
 
 <div class="row">
     <div class="col-md-5 col-xs-12">
         <table class="table">
             <tr>
-                <th>Id</th>
                 <th>Tên phòng</th>
-                <th>Doanh thu</th>
+                <th>Lượt sử dụng</th>
             </tr>
             {% for s in stats %}
             <tr>
-                <td>{{s[0]}}</td>
-                <td>{{s[1]}}</td>
-                <td>{{"{:,.0f}".format(s[2])}} VNĐ</td>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -29,14 +27,13 @@
     <div class="col-md-5 col-xs-12">
         <table class="table">
             <tr>
-                <th>Id</th>
                 <th>Tháng</th>
-
+                <th>Lượt sử dụng</th>
             </tr>
             {% for s in mon_stats %}
             <tr>
-                <td>{{s[0]}}</td>
-                <td>{{"{:,.0f}".format(s[1])}} VNĐ</td>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -48,31 +45,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  let data=[];
-  let labels=[];
+  let data = [];
+  let labels = [];
 
-  let mData=[];
-  let mLabels=[];
+  let mData = [];
+  let mLabels = [];
 
   {% for s in stats %}
-  data.push({{s[2]}})
-  labels.push('{{s[1]}}')
+  data.push({{ s[1] }})  <!-- Lượt sử dụng phòng -->
+  labels.push('{{ s[0] }}') <!-- Tên phòng -->
   {% endfor %}
 
   {% for s in mon_stats %}
-  mData.push({{s[1]}})
-  mLabels.push({{s[0]}})
+  mData.push({{ s[1] }})  <!-- Lượt sử dụng phòng theo tháng -->
+  mLabels.push('{{ s[0] }}') <!-- Tháng -->
   {% endfor %}
 
   window.onload = function() {
     const ctx = document.getElementById('myChart');
-
     new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: '# Doanh thu',
+          label: 'Lượt sử dụng phòng',
           data: data,
           borderWidth: 1,
           backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
@@ -88,13 +84,12 @@
     });
 
     const ctx2 = document.getElementById('myChart2');
-
     new Chart(ctx2, {
       type: 'bar',
       data: {
         labels: mLabels,
         datasets: [{
-          label: '# Doanh thu',
+          label: 'Lượt sử dụng phòng theo tháng',
           data: mData,
           borderWidth: 1,
           backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
@@ -109,6 +104,6 @@
       }
     });
   }
-
 </script>
+
 {% endblock %}
